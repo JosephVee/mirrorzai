@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Test Agent 02 — Local Test Page</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:20px}
+    #console{border:1px solid #ddd;padding:12px;height:360px;overflow:auto;margin-bottom:8px;background:#fafafa}
+    .msg{margin:6px 0}
+    .owner{color:#0b6}
+    .agent{color:#06b}
+    input[type=text]{width:70%}
+    button{margin-right:8px}
+  </style>
+</head>
+<body>
+  <h2>Test Agent 02 — Demo</h2>
+  <p>Use these controls to simulate owner vs visitor sessions. Owner answers are stored locally in <code>owner_profile</code> (localStorage).</p>
+
+  <div style="margin-bottom:8px">
+    <label><strong>Onboarding questions (edit below and click Save Onboarding):</strong></label>
+    <textarea id="onboardingBox" rows="8" style="width:100%; margin-top:6px"></textarea>
+    <div style="margin-top:6px">
+      <button id="saveOnboarding">Save Onboarding</button>
+    </div>
+  </div>
+
+  <div style="margin-bottom:8px">
+    <label style="margin-right:12px"><input type="radio" name="mode" id="switchOwner" /> Owner</label>
+    <label style="margin-right:12px"><input type="radio" name="mode" id="switchVisitor" checked /> Visitor</label>
+    <button id="btnReset">Reset owner_profile</button>
+  </div>
+  <div id="console"></div>
+  <div id="controls" style="display:none">
+    <input id="input" type="text" placeholder="Type your reply here" />
+    <button id="send">Send</button>
+  </div>
+
+<script>
+const config = {
+  id: 'test-agent-02',
+  displayName: 'Test Agent 02',
+  intakeQuestions: [
+    'Full name and preferred nicknames.',
+    'Birthdate and place (city, state/country).',
+    'Family background (parents, siblings, important relationships — only what you’re comfortable storing).',
+    'Education (degrees, institutions, fields of study, notable training).',
+    'Professional background (past roles, current work, industries, specialties).',
+    'Religious or philosophical beliefs and core values to reflect.',
+    'Languages spoken/understood and preferred language for responses.',
+    'Current location (city, region).',
+    'Personal preferences, quirks, signature phrases, or communication style.',
+    'What else should I know about you to be more like you?'
+  ],
+  twinGreeting: "Hi — this is {owner_name}'s twin. What's on your mind?",
+  persistKey: 'owner_profile'
+};
+
+// load onboarding override from localStorage if present
+try{
+  const savedOnboarding = JSON.parse(localStorage.getItem(config.persistKey + '_onboarding'));
+  if(Array.isArray(savedOnboarding) && savedOnboarding.length) config.intakeQuestions = savedOnboarding;
+}catch(e){}
+
+
+const $console = document.getElementById('console');
+const $input = document.getElementById('input');
+const $send = document.getElementById('send');
+const $controls = document.getElementById('controls');
+const $onboardingBox = document.getElementById('onboardingBox');
+const $saveOnboarding = document.getElementById('saveOnboarding');
+let mode = null; // 'owner' or 'visitor'
+let intakeIndex = 0;
+let conversation = [];
+
+function log(text, cls){
+  const d = document.createElement('div'); d.className = 'msg '+(cls||''); d.textContent = text; $console.appendChild(d); $console.scrollTop = $console.scrollHeight;
+}
+
+function loadProfile(){
+  try{return JSON.parse(localStorage.getItem(config.persistKey) || '{}');}catch(e){return {};}
+}
+function saveProfile(p){localStorage.setItem(config.persistKey, JSON.stringify(p));}
+
+// onboarding box helpers
+function loadOnboardingToBox(){
+  $onboardingBox.value = config.intakeQuestions.map((q,i)=> (i+1)+') '+q ).join('\n');
+}
+$saveOnboarding.onclick = ()=>{
+  const lines = $onboardingBox.value.split(/\r?\n/).map(l=>l.replace(/^\s*\d+\)\s*/,'').trim()).filter(Boolean);
+  if(lines.length){
+    config.intakeQuestions = lines;
+    localStorage.setItem(config.persistKey + '_onboarding', JSON.stringify(lines));
+    log('Onboarding saved', 'agent');
+  } else {
+    log('Onboarding is empty — nothing saved', 'agent');
+  }
+}
+// populate onboarding box on load
+loadOnboardingToBox();
+
+const $switchOwner = document.getElementById('switchOwner');
+const $switchVisitor = document.getElementById('switchVisitor');
+
+function setModeOwner(){
+  mode='owner'; intakeIndex=0; $console.innerHTML=''; log('Intake Mode — owner detected', 'agent'); askNextIntake(); $controls.style.display='block';
+}
+function setModeVisitor(){
+  mode='visitor'; $console.innerHTML=''; const p = loadProfile(); const ownerName = (p['Full name and preferred nicknames.']||'the owner'); log(config.twinGreeting.replace('{owner_name}', ownerName), 'agent'); $controls.style.display='block';
+}
+
+$switchOwner.addEventListener('change', ()=>{ if($switchOwner.checked) setModeOwner(); });
+$switchVisitor.addEventListener('change', ()=>{ if($switchVisitor.checked) setModeVisitor(); });
+
+// initialize mode based on radio state
+if($switchOwner.checked) setModeOwner(); else setModeVisitor();
+
+document.getElementById('btnReset').onclick = ()=>{localStorage.removeItem(config.persistKey); log('owner_profile cleared', 'agent');}
+
+$send.onclick = ()=>{const text = $input.value.trim(); if(!text) return; $input.value=''; if(mode==='owner') handleOwnerReply(text); else if(mode==='visitor') handleVisitorMsg(text);}
+
+function askNextIntake(){
+  if(intakeIndex < config.intakeQuestions.length){
+    log('Q: '+config.intakeQuestions[intakeIndex], 'agent');
+  } else {
+    log('Intake complete. Saved to owner_profile.', 'agent');
+    const p = loadProfile(); log('Summary (owner_profile): '+JSON.stringify(p), 'agent');
+  }
+}
+
+function handleOwnerReply(text){
+  const q = config.intakeQuestions[intakeIndex];
+  // save answer under question key
+  const p = loadProfile(); p[q] = text; saveProfile(p);
+  log('Owner: '+text, 'owner');
+  log('I heard: "'+text+'" — anything to add or correct?', 'agent');
+  intakeIndex++;
+  // auto-ask next after small delay
+  setTimeout(()=>{ if(intakeIndex < config.intakeQuestions.length) askNextIntake(); else log('Final question: What else should I know about you to be more like you?', 'agent'); }, 300);
+}
+
+function handleVisitorMsg(text){
+  log('Visitor: '+text, 'owner');
+  conversation.push({from:'visitor',text});
+  // naive response: reflect using owner_profile fields if any
+  const p = loadProfile();
+  let reply = '';
+  if(text.toLowerCase().includes('who are you') || text.toLowerCase().includes('who is')){
+    reply = 'I am a virtual representation of '+(p['Full name and preferred nicknames.']||'the owner')+'.';
+  } else if(text.toLowerCase().includes('where born')){
+    reply = p['Birthdate and place (city, state/country).'] || "I don't have that on file yet.";
+  } else {
+    reply = "Thanks — I can help. Would you like a short summary when we're done?";
+  }
+  log('Agent: '+reply, 'agent');
+}
+
+</script>
+</body>
+</html>
