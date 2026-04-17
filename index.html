@@ -4,14 +4,38 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Test Agents Index</title>
-  <style>body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:20px} li{margin:8px 0}</style>
+  <style>body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:20px} li{margin:8px 0} table{border-collapse:collapse} td,th{padding:6px;border:1px solid #ddd}</style>
 </head>
 <body>
   <h1>Test Agents</h1>
   <p>Local test hub for all test agents. Click a link to open the agent's local test page.</p>
+
+  <h2>User search</h2>
+  <input id="q" placeholder="Search by email, username, or public name" style="width:60%" />
+  <button id="search">Search</button>
+  <div id="results"></div>
+
   <ul>
-    <li><a href="../test-agent-02/test-page.html" target="_blank">Test Agent 02 — test page</a></li>
+    <li><a href="/test-agent-02/test-page.html" target="_blank">Test Agent 02 — test page</a></li>
   </ul>
   <p>To add another test agent, create a folder under <code>deploy/</code> with the agent test page and link it here.</p>
+
+<script>
+async function doSearch(){
+  const q = document.getElementById('q').value.trim();
+  if(!q) return;
+  const r = await fetch('/api/user-search?q='+encodeURIComponent(q));
+  const data = await r.json();
+  const out = [];
+  out.push('<table><tr><th>Email</th><th>Username</th><th>Public name</th></tr>');
+  for(const row of data.results){
+    out.push(`<tr><td>${row.email||''}</td><td>${row.username||''}</td><td>${row.public_name||''}</td></tr>`);
+  }
+  out.push('</table>');
+  document.getElementById('results').innerHTML = out.join('');
+}
+document.getElementById('search').onclick = doSearch;
+</script>
+<script src="/public_admin_link.js"></script>
 </body>
 </html>
