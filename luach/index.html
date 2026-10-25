@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jewish Home Dashboard</title>
+<style>
+:root{--ink:#27322d;--muted:#68776f;--paper:#f5f3ed;--line:#e3e8df;--green:#45745a;--shadow:0 14px 45px #24372d13}*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#ecefe9,#f7f5ee);color:var(--ink);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.shell{max-width:1500px;margin:auto;padding:28px}.header{display:flex;align-items:center;justify-content:space-between;gap:22px;margin-bottom:20px}.brand{font-size:15px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--green)}.clock{font-size:clamp(45px,6vw,86px);font-weight:280;letter-spacing:-.065em;line-height:1}.small{font-size:15px;color:var(--muted)}.topright{text-align:right}.hebrew{font-size:24px;font-family:Georgia,serif;direction:rtl}.grid{display:grid;grid-template-columns:1fr 1.08fr .95fr;gap:18px}.card{border:1px solid var(--line);border-radius:22px;padding:24px;background:#fffdfa;box-shadow:var(--shadow);min-width:0}.card h2{font-size:14px;text-transform:uppercase;letter-spacing:.09em;margin:0 0 17px;color:#68766b}.hero{min-height:225px}.parsha{font-size:40px;font-family:Georgia,serif;margin:4px 0 18px}.times{display:flex;gap:24px;flex-wrap:wrap}.time{font-size:30px;font-weight:650;letter-spacing:-.04em;margin-top:5px}.chip{display:inline-block;background:#edf4ed;color:#386b4d;padding:8px 12px;border-radius:99px;font-size:13px}.weather{background:linear-gradient(150deg,#fffbe7,#eff6ef)}.temp{font-size:72px;font-weight:300;line-height:1.15}.icon{font-size:32px}.photo-card{grid-row:span 2;display:flex;flex-direction:column}.photo{width:100%;height:320px;object-fit:contain;border-radius:15px;background:#e8ede6}.photo-placeholder{height:320px;display:flex;align-items:center;justify-content:center;background:#eef1e9;border-radius:15px;text-align:center;padding:30px;color:#68776f}.sub{font-size:14px;color:#6d796e;margin-top:12px}.quote{font-family:Georgia,serif;font-size:21px;line-height:1.55;white-space:pre-line;max-height:370px;overflow-y:auto;padding-right:7px}.zman-list{display:grid;grid-template-columns:1fr auto;gap:13px 22px}.zman-list>span:nth-child(even){font-weight:700;text-align:right}.footer{text-align:center;color:#819087;font-size:12px;padding:22px}.link{color:#2a684b;text-decoration:none;font-weight:700}.link:hover{text-decoration:underline}.error{color:#9f443e}#notice{margin-bottom:12px}.split{display:flex;align-items:center;justify-content:space-between;gap:12px}@media(max-width:980px){.grid{grid-template-columns:1fr 1fr}.photo-card{grid-row:auto}}@media(max-width:650px){.grid{grid-template-columns:1fr}.header{flex-direction:column;align-items:flex-start}.topright{text-align:left}.shell{padding:14px}.photo{height:260px}}@media(min-width:1000px){.photo-card{grid-column:2;grid-row:1 / span 2}.weather{grid-column:3;grid-row:1}.zman-card{grid-column:3;grid-row:2}.hayom{grid-column:1;grid-row:2}}
+ .action{padding:8px 12px;border:1px solid #bdd0c5;border-radius:10px;background:#f1f6ef;color:#276548;font:inherit;cursor:pointer}.action:disabled{opacity:.5;cursor:default}.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}.edit-area{width:100%;min-height:135px;border:1px solid #bdd0c5;border-radius:10px;padding:10px;font:inherit;resize:vertical}.photo-placeholder[hidden],.photo[hidden]{display:none!important}.msg{font-size:13px;color:#68776f;margin-top:8px}.tabs{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 18px}.tab{display:inline-block;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fffdfa;color:var(--ink);text-decoration:none;font:700 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.tab:hover{background:#edf4ed} </style></head><body><main class="shell">
+<header class="header"><div><div class="brand">ב״ה &nbsp; Jewish Home</div><div id="clock" class="clock">--:--</div><div id="english-date" class="small">Loading date…</div></div><div class="topright"><div class="small">Hebrew date · changes at sunset</div><div id="hebrew-date" class="hebrew">טוען…</div><div id="city" class="small">Albany, New York</div></div></header>
+<div id="notice" class="small"></div><nav class="tabs" aria-label="Luach navigation"><a class="tab" href="#shabbat-card">Shabbos</a><a class="tab" href="#luach-card">Luach</a><a class="tab" href="#hayom-card">Hayom Yom</a><a class="tab" href="#weather-card">Weather</a><a class="tab" href="#family-card">Family</a></nav><section class="grid">
+<article class="card hero" id="shabbat-card"><h2>This Shabbos</h2><div class="small" id="shabbat-range">This week</div><div id="parsha" class="parsha">Loading…</div><div class="times"><div><div class="small">Candle lighting</div><div class="time" id="candles">—</div></div><div><div class="small">Shabbos ends</div><div class="time" id="havdalah">—</div></div></div><div class="sub">Verify times with your community's minhag.</div></article>
+<article class="card photo-card" id="family-card"><h2>Family moments</h2><img id="family-photo" class="photo" hidden alt="Family photo"><div id="photo-empty" class="photo-placeholder">Add JPG or PNG images to the <strong style="padding:0 4px">photos</strong> folder to start your family slideshow.</div><div class="split sub"><span id="photo-label">Personal photo slideshow</span><button id="next-photo" class="action" type="button">Next photo →</button></div><div class="controls"><button id="add-photos" class="action" type="button">+ Add family photos</button><input id="photo-upload" type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif" hidden></div><div id="photo-status" class="msg" role="status"></div></article>
+<article class="card weather" id="weather-card"><h2>Weather today <span class="icon" style="float:right" id="weather-icon">☀️</span></h2><div class="temp" id="temperature">—°</div><div id="condition" style="font-weight:600">Loading forecast…</div><div id="wind" class="sub">Wind —</div><div class="sub">Weather: Open-Meteo</div></article>
+<article class="card hayom" id="hayom-card"><h2>Hayom Yom · היום יום</h2><div id="hayom-text" class="quote">Loading today’s Hayom Yom…</div><p class="small" id="hayom-status">Full English daily teaching · Source: Chabad.org</p><p><a id="hayom-source" class="link" href="https://www.chabad.org/dailystudy/HayomYom.htm" target="_blank" rel="noopener noreferrer">Read at Chabad.org ↗</a></p><div class="chip">Chabad daily study</div><div class="controls"><button id="edit-hayom" type="button" class="action">Add / edit daily teaching</button></div><div id="hayom-editor" hidden><p class="small">Paste a copy of today’s teaching that you have permission to use. It will be saved for this Hebrew calendar date.</p><textarea id="hayom-input" class="edit-area" placeholder="Enter the complete Hayom Yom teaching…"></textarea><div class="controls"><button id="save-hayom" class="action" type="button">Save teaching</button><button id="cancel-hayom" class="action" type="button">Cancel</button></div></div></article>
+<article class="card zman-card" id="luach-card"><h2>Today's Zmanim</h2><div class="zman-list"><span>Alos hashachar</span><span id="alos">—</span><span>Sunrise</span><span id="sunrise">—</span><span>Latest Shema (GRA)</span><span id="shema">—</span><span>Chatzos</span><span id="chatzos">—</span><span>Sunset</span><span id="sunset">—</span><span>Tzeis (8.5°)</span><span id="tzeis">—</span></div></article>
+</section><div class="footer">Powered by Hebcal and Open-Meteo · Personal MacBook prototype · Updates every 15 minutes</div></main>
+<script>
+const $=id=>document.getElementById(id);
+const fmt=iso=>{if(!iso)return '—';const d=new Date(iso);return Number.isNaN(d.getTime())?'—':d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZone:'America/New_York'})};
+const localDate=()=>new Intl.DateTimeFormat('en-US',{dateStyle:'full',timeZone:'America/New_York'}).format(new Date());
+function clock(){const now=new Date();$('clock').textContent=now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZone:'America/New_York'});$('english-date').textContent=localDate()};clock();setInterval(clock,1000);
+const codes={0:['Clear sky','☀️'],1:['Mainly clear','🌤️'],2:['Partly cloudy','⛅'],3:['Cloudy','☁️'],45:['Foggy','🌫️'],48:['Foggy','🌫️'],51:['Light drizzle','🌦️'],53:['Drizzle','🌦️'],55:['Drizzle','🌧️'],61:['Light rain','🌧️'],63:['Rain','🌧️'],65:['Heavy rain','🌧️'],71:['Light snow','🌨️'],73:['Snow','🌨️'],75:['Heavy snow','❄️'],80:['Showers','🌦️'],81:['Showers','🌧️'],82:['Heavy showers','🌧️'],95:['Thunderstorms','⛈️']};
+let hayomLoadedDate='',activeStudyDate='';
+async function loadHayom(day){
+ if(hayomLoadedDate===day)return;
+ activeStudyDate=day;
+ const r=await fetch('/api/hayomyom?date='+encodeURIComponent(day),{cache:'no-store'});
+ const d=await r.json();if(!r.ok)throw Error(d.error||'Could not fetch reading');
+ $('hayom-source').href=d.source||'https://www.chabad.org/dailystudy/HayomYom.htm';
+ if(d.text){$('hayom-text').textContent=d.text;$('hayom-status').textContent='Daily teaching · '+day+(d.origin==='local'?' · Saved locally':' · Chabad.org');}
+ else{$('hayom-text').textContent='Today’s full text is not available automatically. Open the Chabad.org link, or add the teaching below to display it here.';$('hayom-status').textContent='No local teaching saved for '+day;}
+ hayomLoadedDate=day;
+}
+$('edit-hayom').addEventListener('click',()=>{$('hayom-editor').hidden=false;$('hayom-input').focus()});
+$('cancel-hayom').addEventListener('click',()=>{$('hayom-editor').hidden=true});
+$('save-hayom').addEventListener('click',async()=>{
+ const text=$('hayom-input').value.trim();if(!text){$('hayom-status').textContent='Enter a teaching before saving.';return;}
+ if(!activeStudyDate){$('hayom-status').textContent='Wait for the date to load first.';return;}
+ const button=$('save-hayom');button.disabled=true;
+ try{const r=await fetch('/api/hayomyom-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({date:activeStudyDate,text})});const d=await r.json();if(!r.ok)throw Error(d.error||'Save failed');hayomLoadedDate='';await loadHayom(activeStudyDate);$('hayom-editor').hidden=true;}
+ catch(e){$('hayom-status').textContent='Unable to save: '+e.message;}finally{button.disabled=false;}
+});
+async function refresh(){try{const r=await fetch('/api/data',{cache:'no-store'});if(!r.ok)throw Error('Online data unavailable ('+r.status+')');const d=await r.json();
+$('notice').textContent='';$('city').textContent=d.config.city;
+const studyDate=d.after_sunset?new Date(d.today+'T12:00:00Z'):new Date(d.today+'T12:00:00Z');
+if(d.after_sunset)studyDate.setUTCDate(studyDate.getUTCDate()+1);
+loadHayom(studyDate.toISOString().slice(0,10)).catch(e=>{$('hayom-status').textContent='Hayom Yom temporarily unavailable: '+e.message});
+$('hebrew-date').textContent=d.hebrew.hebrew||`${d.hebrew.hd} ${d.hebrew.hm} ${d.hebrew.hy}`;
+const items=d.shabbat.items||[];const choose=cat=>items.find(x=>x.category===cat);const p=choose('parashat'),c=choose('candles'),h=choose('havdalah');$('parsha').textContent=p?p.title.replace(/^Parashat /,'Parshas '):'See weekly calendar';$('candles').textContent=c?fmt(c.date):'—';$('havdalah').textContent=h?fmt(h.date):'—';$('shabbat-range').textContent='Upcoming Shabbos · '+(p?.date||'');
+const z=d.zmanim.times||{};for(const [id,keys] of Object.entries({alos:['alotHaShachar'],sunrise:['sunrise'],shema:['sofZmanShma','sofZmanShmaGRA'],chatzos:['chatzot'],sunset:['sunset'],tzeis:['tzeit85deg','tzeit'] })){const val=keys.map(k=>z[k]).find(Boolean);$(id).textContent=fmt(val)}
+const w=d.weather.current||{};$('temperature').textContent=(w.temperature_2m==null?'—':Math.round(w.temperature_2m))+'°F';const info=codes[w.weather_code]||['Current conditions','🌤️'];$('condition').textContent=info[0];$('weather-icon').textContent=info[1];$('wind').textContent='Wind: '+(w.wind_speed_10m??'—')+' mph · Humidity '+(w.relative_humidity_2m??'—')+'%';
+}catch(err){$('notice').innerHTML='<span class="error">Cannot refresh live data. Check internet connection and restart server. '+String(err.message).replaceAll('<','&lt;')+'</span>';console.error(err)}}
+let photos=[],photoIndex=0;
+function displayPhoto(){
+ const image=$('family-photo'),empty=$('photo-empty');
+ if(!photos.length){image.hidden=true;empty.hidden=false;$('photo-label').textContent='No photos loaded';return;}
+ empty.hidden=true;image.hidden=false;image.src=photos[photoIndex];$('photo-label').textContent=`Family photo ${photoIndex+1} / ${photos.length}`;
+}
+$('family-photo').addEventListener('error',()=>{$('photo-status').textContent='Could not display this image. Try another photo.'});
+async function loadPhotos(){try{const r=await fetch('/api/photos',{cache:'no-store'});if(!r.ok)throw Error('Photo list unavailable');photos=await r.json();if(photoIndex>=photos.length)photoIndex=0;displayPhoto();}catch(e){$('photo-status').textContent=e.message;}}
+$('next-photo').addEventListener('click',()=>{if(!photos.length){$('photo-status').textContent='Click Add family photos first.';return;}photoIndex=(photoIndex+1)%photos.length;displayPhoto();});
+$('add-photos').addEventListener('click',()=>$('photo-upload').click());
+$('photo-upload').addEventListener('change',async event=>{
+ const files=Array.from(event.target.files);if(!files.length)return;
+ $('add-photos').disabled=true;$('photo-status').textContent='Uploading '+files.length+' photo(s)…';
+ let uploaded=0;
+ for(const file of files){
+  try{const r=await fetch('/api/photo-upload?name='+encodeURIComponent(file.name),{method:'POST',headers:{'Content-Type':file.type},body:file});const result=await r.json();if(!r.ok)throw Error(result.error||'Upload failed');uploaded++;}
+  catch(e){$('photo-status').textContent='Upload failed for '+file.name+': '+e.message;}
+ }
+ await loadPhotos();if(uploaded===files.length)$('photo-status').textContent=uploaded+' photo(s) added successfully.';
+ $('photo-upload').value='';$('add-photos').disabled=false;
+});
+setInterval(()=>{if(photos.length>1){photoIndex=(photoIndex+1)%photos.length;displayPhoto()}},12000);
+refresh();loadPhotos();setInterval(refresh,15*60*1000);
+</script></body></html>
